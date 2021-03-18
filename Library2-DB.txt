@@ -1,0 +1,1933 @@
+QUESTION 2 SQL REQUESTS
+
+REQUEST 1.
+------------------------------------------------------------------------------
+SQL> select xmlroot(xmlelement("publisher",xmlattributes(b.poid.pid as "id"),
+  2  xmlagg(xmlelement("book",xmlattributes(b.iid as "id"),
+  3  xmlelement("book-title", b.book_name),xmlelement("author",b.auo_id.sname.fullname()),
+  4  xmlelement("item-qty", b.itm_qty)))),version '1.0')
+  5  from book_item b
+  6  where b.poid.pubname = 'Penguin Random'
+  7  group by b.poid.pid;
+
+XMLROOT(XMLELEMENT("PUBLISHER",XMLATTRIBUTES(B.POID.PIDAS"ID"),XMLAGG(XMLELEMENT
+--------------------------------------------------------------------------------
+<?xml version="1.0"?>
+<publisher id="P123">
+  <book id="I1245">
+    <book-title>1984</book-title>
+    <author>George Orwell</author>                                              
+    <item-qty>5</item-qty>
+  </book>
+  <book id="I1249">
+    <book-title>Brave New World</book-title>
+    <author>Aldous Huxley</author>
+    <item-qty>5</item-qty>
+  </book>
+  <book id="I1248">
+    <book-title>Beloved</book-title>
+    <author>Toni Morrison</author>
+    <item-qty>2</item-qty>
+  </book>
+  <book id="I1251">
+    <book-title>Leaves of Grass</book-title>
+    <author>Walt Whitman</author>
+    <item-qty>3</item-qty>
+  </book>
+  <book id="I1250">
+    <book-title>The Idiot</book-title>
+    <author>Fyodor Dostoevsky</author>
+    <item-qty>4</item-qty>
+  </book>
+</publisher>
+
+
+REQUEST 2.
+------------------------------------------------------------------------------
+SQL> select xmlroot(xmlelement("publisher",xmlattributes(b.poid.pid as "id"),xmlagg(
+  2  xmlelement("book",xmlattributes(b.iid as "id"),
+  3  xmlelement("book-title", b.book_name),
+  4  xmlelement("author",b.auo_id.sname.fullname()),
+  5  xmlelement("item-qty", b.itm_qty)))), version '1.0')
+  6  from book_item b
+  7  group by b.poid.pid;
+
+XMLROOT(XMLELEMENT("PUBLISHER",XMLATTRIBUTES(B.POID.PIDAS"ID"),XMLAGG(XMLELEMENT
+--------------------------------------------------------------------------------
+<?xml version="1.0"?>
+<publisher id="P121">
+  <book id="I1243">
+    <book-title>The Shinning</book-title>
+    <author>Stephen King</author>
+    <item-qty>5</item-qty>
+  </book>
+</publisher>
+
+<?xml version="1.0"?>
+<publisher id="P122">
+  <book id="I1244">
+    <book-title>Harry Potter</book-title>
+    <author>JK Rowling</author>
+    <item-qty>5</item-qty>
+  </book>
+  <book id="I1256">
+    <book-title>Fudgeamania</book-title>
+    <author>Judy Blume</author>
+    <item-qty>2</item-qty>
+  </book>
+  <book id="I1255">
+    <book-title>Superfudge</book-title>
+    <author>Judy Blume</author>
+    <item-qty>4</item-qty>
+  </book>
+</publisher>
+
+<?xml version="1.0"?>
+<publisher id="P123">
+  <book id="I1245">
+    <book-title>1984</book-title>
+    <author>George Orwell</author>
+    <item-qty>5</item-qty>
+  </book>
+  <book id="I1249">
+    <book-title>Brave New World</book-title>
+    <author>Aldous Huxley</author>
+    <item-qty>5</item-qty>
+  </book>
+  <book id="I1248">
+    <book-title>Beloved</book-title>
+    <author>Toni Morrison</author>
+    <item-qty>2</item-qty>
+  </book>
+  <book id="I1251">
+    <book-title>Leaves of Grass</book-title>
+    <author>Walt Whitman</author>
+    <item-qty>3</item-qty>
+  </book>
+  <book id="I1250">
+    <book-title>The Idiot</book-title>
+    <author>Fyodor Dostoevsky</author>
+    <item-qty>4</item-qty>
+  </book>
+</publisher>
+
+<?xml version="1.0"?>
+<publisher id="P124">
+  <book id="I1252">
+    <book-title>Pride and Preju.</book-title>
+    <author>Jane Austen</author>
+    <item-qty>3</item-qty>
+  </book>
+</publisher>
+
+
+REQUEST 3.
+------------------------------------------------------------------------------
+SQL> select xmlroot(xmlelement("library",xmlattributes(b.loid.lid as "id"),xmlagg(
+  2  xmlelement("book",xmlattributes(b.iid as "id"),
+  3  xmlelement("book-title", b.book_name),
+  4  xmlelement("author",xmlforest(b.auo_id.sname.lastn as "last-name",
+  5  b.auo_id.sname.firstn as "first-name")),
+  6  xmlelement("year", b.yr_release),xmlelement("in-stock",b.itm_qty-b.rented_no),
+  7  xmlelement("total-stock", b.itm_qty)))), version '1.0')
+  8  from book_item b
+  9  where b.loid.libname = 'Albion Branch'
+ 10  group by b.loid.lid;
+
+XMLROOT(XMLELEMENT("LIBRARY",XMLATTRIBUTES(B.LOID.LIDAS"ID"),XMLAGG(XMLELEMENT("
+--------------------------------------------------------------------------------
+<?xml version="1.0"?>
+<library id="002">
+  <book id="I1244">
+    <book-title>Harry Potter</book-title>
+    <author>
+      <last-name>Rowling</last-name>
+      <first-name>JK</first-name>
+    </author>
+    <year>1997</year>
+    <in-stock>0</in-stock>
+    <total-stock>5</total-stock>
+  </book>
+  <book id="I1256">
+    <book-title>Fudgeamania</book-title>
+    <author>
+      <last-name>Blume</last-name>
+      <first-name>Judy</first-name>
+    </author>
+    <year>1990</year>
+    <in-stock>2</in-stock>
+    <total-stock>2</total-stock>
+  </book>
+  <book id="I1255">
+    <book-title>Superfudge</book-title>
+    <author>
+      <last-name>Blume</last-name>
+      <first-name>Judy</first-name>
+    </author>
+    <year>1980</year>
+    <in-stock>4</in-stock>
+    <total-stock>4</total-stock>
+  </book>
+  <book id="I1252">
+    <book-title>Pride and Preju.</book-title>
+    <author>
+      <last-name>Austen</last-name>
+      <first-name>Jane</first-name>
+    </author>
+    <year>1813</year>
+    <in-stock>0</in-stock>
+    <total-stock>3</total-stock>
+  </book>
+  <book id="I1251">
+    <book-title>Leaves of Grass</book-title>
+    <author>
+      <last-name>Whitman</last-name>
+      <first-name>Walt</first-name>
+    </author>
+    <year>1855</year>
+    <in-stock>0</in-stock>
+    <total-stock>3</total-stock>
+  </book>
+  <book id="I1250">
+    <book-title>The Idiot</book-title>
+    <author>
+      <last-name>Dostoevsky</last-name>
+      <first-name>Fyodor</first-name>
+    </author>
+    <year>1868</year>
+    <in-stock>3</in-stock>
+    <total-stock>4</total-stock>
+  </book>
+  <book id="I1245">
+    <book-title>1984</book-title>
+    <author>
+      <last-name>Orwell</last-name>
+      <first-name>George</first-name>
+    </author>
+    <year>1949</year>
+    <in-stock>4</in-stock>
+    <total-stock>5</total-stock>
+  </book>
+</library>
+
+
+
+REQUEST 4.
+------------------------------------------------------------------------------
+SQL> select xmlroot(xmlelement("library",xmlattributes(b.loid.lid as "id"),xmlagg(
+  2  xmlelement("book",xmlattributes(b.iid as "id"),
+  3  xmlelement("rented", b.rented_no),xmlelement("total-stock", b.itm_qty),
+  4  xmlelement("in-transit", b.in_transit)))), version '1.0')
+  5  from book_item b
+  6  group by b.loid.lid;
+
+XMLROOT(XMLELEMENT("LIBRARY",XMLATTRIBUTES(B.LOID.LIDAS"ID"),XMLAGG(XMLELEMENT("
+--------------------------------------------------------------------------------
+<?xml version="1.0"?>
+<library id="001">
+  <book id="I1243">
+    <rented>5</rented>
+    <total-stock>5</total-stock>
+    <in-transit>2</in-transit>
+  </book>
+  <book id="I1249">
+    <rented>0</rented>
+    <total-stock>5</total-stock>
+    <in-transit>0</in-transit>
+  </book>
+  <book id="I1248">
+    <rented>2</rented>
+    <total-stock>2</total-stock>
+    <in-transit>1</in-transit>
+  </book>
+</library>
+
+<?xml version="1.0"?>
+<library id="002">
+  <book id="I1244">
+    <rented>5</rented>
+    <total-stock>5</total-stock>
+    <in-transit>4</in-transit>
+  </book>
+  <book id="I1256">
+    <rented>0</rented>
+    <total-stock>2</total-stock>
+    <in-transit>0</in-transit>
+  </book>
+  <book id="I1255">
+    <rented>0</rented>
+    <total-stock>4</total-stock>
+    <in-transit>0</in-transit>
+  </book>
+  <book id="I1252">
+    <rented>3</rented>
+    <total-stock>3</total-stock>
+    <in-transit>2</in-transit>
+  </book>
+  <book id="I1251">
+    <rented>3</rented>
+    <total-stock>3</total-stock>
+    <in-transit>2</in-transit>
+  </book>
+  <book id="I1250">
+    <rented>1</rented>
+    <total-stock>4</total-stock>
+    <in-transit>1</in-transit>
+  </book>
+  <book id="I1245">
+    <rented>1</rented>
+    <total-stock>5</total-stock>
+    <in-transit>0</in-transit>
+  </book>
+</library>
+
+
+
+REQUEST 5.
+------------------------------------------------------------------------------
+SQL> select xmlroot(xmlelement("stock-info",xmlagg(xmlelement("library",
+  2  xmlelement("lib-name",l.libname),xmlelement("city",l.libaddr.city
+  3  ),xmlelement("books",(select xmlagg(xmlelement("book",xmlelement(
+  4  "book-id",b.iid),xmlelement("book-name",b.book_name),xmlelement(
+  5  "year",b.yr_release),xmlelement("author-info",(select xmlagg(
+  6  xmlelement("aname",xmlforest(a.sname.firstn as "fname",
+  7  a.sname.lastn as "lname",a.yofb as "yofb"))) from auth a
+  8  where a.au_id = b.auo_id.au_id)))) from book_item b
+  9  where b.loid.lid = l.lid)),xmlelement("videos",(select xmlagg(
+ 10  xmlelement("video",xmlelement("video-id",v.iid),xmlelement(
+ 11  "video-name",v.vid_name),xmlelement("year",v.yr_release),xmlelement(
+ 12  "director-info",(select xmlagg(xmlelement("aname",xmlforest(
+ 13  a.sname.firstn as "fname",a.sname.lastn as "lname",a.yofb as "yofb"
+ 14  ))) from auth a where a.au_id = v.auo_id.au_id)))) from video_item v
+ 15  where v.loid.lid = l.lid))))), version '1.0') from lib l
+ 16  group by l.lid;
+
+XMLROOT(XMLELEMENT("STOCK-INFO",XMLAGG(XMLELEMENT("LIBRARY",XMLELEMENT("LIB-NAME
+--------------------------------------------------------------------------------
+<?xml version="1.0"?>
+<stock-info>
+  <library>
+    <lib-name>Humber Summit</lib-name>
+    <city>North York</city>
+    <books>
+      <book>
+        <book-id>I1243</book-id>
+        <book-name>The Shinning</book-name>
+        <year>1977</year>
+        <author-info>
+          <aname>
+            <fname>Stephen</fname>
+            <lname>King</lname>
+            <yofb>1947</yofb>
+          </aname>
+        </author-info>
+      </book>
+      <book>
+        <book-id>I1248</book-id>
+        <book-name>Beloved</book-name>
+        <year>1987</year>
+        <author-info>
+          <aname>
+            <fname>Toni</fname>
+            <lname>Morrison</lname>
+            <yofb>1931</yofb>
+          </aname>
+        </author-info>
+      </book>
+      <book>
+        <book-id>I1249</book-id>
+        <book-name>Brave New World</book-name>
+        <year>1932</year>
+        <author-info>
+          <aname>
+            <fname>Aldous</fname>
+            <lname>Huxley</lname>
+            <yofb>1984</yofb>
+          </aname>
+        </author-info>
+      </book>
+    </books>
+    <videos>
+      <video>
+        <video-id>I1247</video-id>
+        <video-name>Forget Sarah Marsh</video-name>
+        <year>2008</year>
+        <director-info>
+          <aname>
+            <fname>Nicholas</fname>
+            <lname>Stoller</lname>
+          </aname>
+        </director-info>
+      </video>
+      <video>
+        <video-id>I1258</video-id>
+        <video-name>Little Big Man</video-name>
+        <year>1970</year>
+        <director-info>
+          <aname>
+            <fname>Arthur</fname>
+            <lname>Penn</lname>
+            <yofb>1922</yofb>
+          </aname>
+        </director-info>
+      </video>
+      <video>
+        <video-id>I1241</video-id>
+        <video-name>Kill Bill Vol 1</video-name>
+        <year>2003</year>
+        <director-info>
+          <aname>
+            <fname>Quentin</fname>
+            <lname>Tarantino</lname>
+            <yofb>1963</yofb>
+          </aname>
+        </director-info>
+      </video>
+      <video>
+        <video-id>I1242</video-id>
+        <video-name>Wall E</video-name>
+        <year>2008</year>
+        <director-info>
+          <aname>
+            <fname>Andrew</fname>
+            <lname>Stanton</lname>
+            <yofb>1965</yofb>
+          </aname>
+        </director-info>
+      </video>
+      <video>
+        <video-id>I1257</video-id>
+        <video-name>Casino</video-name>
+        <year>1995</year>
+        <director-info>
+          <aname>
+            <fname>Martin</fname>
+            <lname>Scorsese</lname>
+            <yofb>1942</yofb>
+          </aname>
+        </director-info>
+      </video>
+      <video>
+        <video-id>I1259</video-id>
+        <video-name>Wolf of Wall St</video-name>
+        <year>2013</year>
+        <director-info>
+          <aname>
+            <fname>Martin</fname>
+            <lname>Scorsese</lname>
+            <yofb>1942</yofb>
+          </aname>
+        </director-info>
+      </video>
+    </videos>
+  </library>
+</stock-info>
+
+<?xml version="1.0"?>
+<stock-info>
+  <library>
+    <lib-name>Albion Branch</lib-name>
+    <city>Etobicoke</city>
+    <books>
+      <book>
+        <book-id>I1244</book-id>
+        <book-name>Harry Potter</book-name>
+        <year>1997</year>
+        <author-info>
+          <aname>
+            <fname>JK</fname>
+            <lname>Rowling</lname>
+            <yofb>1965</yofb>
+          </aname>
+        </author-info>
+      </book>
+      <book>
+        <book-id>I1245</book-id>
+        <book-name>1984</book-name>
+        <year>1949</year>
+        <author-info>
+          <aname>
+            <fname>George</fname>
+            <lname>Orwell</lname>
+            <yofb>1903</yofb>
+          </aname>
+        </author-info>
+      </book>
+      <book>
+        <book-id>I1250</book-id>
+        <book-name>The Idiot</book-name>
+        <year>1868</year>
+        <author-info>
+          <aname>
+            <fname>Fyodor</fname>
+            <lname>Dostoevsky</lname>
+            <yofb>1821</yofb>
+          </aname>
+        </author-info>
+      </book>
+      <book>
+        <book-id>I1251</book-id>
+        <book-name>Leaves of Grass</book-name>
+        <year>1855</year>
+        <author-info>
+          <aname>
+            <fname>Walt</fname>
+            <lname>Whitman</lname>
+            <yofb>1819</yofb>
+          </aname>
+        </author-info>
+      </book>
+      <book>
+        <book-id>I1252</book-id>
+        <book-name>Pride and Preju.</book-name>
+        <year>1813</year>
+        <author-info>
+          <aname>
+            <fname>Jane</fname>
+            <lname>Austen</lname>
+            <yofb>1775</yofb>
+          </aname>
+        </author-info>
+      </book>
+      <book>
+        <book-id>I1255</book-id>
+        <book-name>Superfudge</book-name>
+        <year>1980</year>
+        <author-info>
+          <aname>
+            <fname>Judy</fname>
+            <lname>Blume</lname>
+            <yofb>1938</yofb>
+          </aname>
+        </author-info>
+      </book>
+      <book>
+        <book-id>I1256</book-id>
+        <book-name>Fudgeamania</book-name>
+        <year>1990</year>
+        <author-info>
+          <aname>
+            <fname>Judy</fname>
+            <lname>Blume</lname>
+            <yofb>1938</yofb>
+          </aname>
+        </author-info>
+      </book>
+    </books>
+    <videos>
+      <video>
+        <video-id>I1246</video-id>
+        <video-name>Pulp Fiction</video-name>
+        <year>1994</year>
+        <director-info>
+          <aname>
+            <fname>Quentin</fname>
+            <lname>Tarantino</lname>
+            <yofb>1963</yofb>
+          </aname>
+        </director-info>
+      </video>
+      <video>
+        <video-id>I1253</video-id>
+        <video-name>Superbad</video-name>
+        <year>2007</year>
+        <director-info>
+          <aname>
+            <fname>Greg</fname>
+            <lname>Mottola</lname>
+            <yofb>1964</yofb>
+          </aname>
+        </director-info>
+      </video>
+      <video>
+        <video-id>I1254</video-id>
+        <video-name>Goodfellas</video-name>
+        <year>1990</year>
+        <director-info>
+          <aname>
+            <fname>Martin</fname>
+            <lname>Scorsese</lname>
+            <yofb>1942</yofb>
+          </aname>
+        </director-info>
+      </video>
+      <video>
+        <video-id>I1260</video-id>
+        <video-name>Django Unchained</video-name>
+        <year>2012</year>
+        <director-info>
+          <aname>
+            <fname>Quentin</fname>
+            <lname>Tarantino</lname>
+            <yofb>1963</yofb>
+          </aname>
+        </director-info>
+      </video>
+    </videos>
+  </library>
+</stock-info>
+
+
+
+REQUEST 6.
+------------------------------------------------------------------------------
+SQL> select xmlroot(xmlelement("root",xmlagg(xmlelement("library",
+  2  xmlelement("lib-name",l.libname),xmlelement("stnum",l.libaddr.stnum),
+  3  xmlelement("stname",l.libaddr.stname),xmlelement("city",l.libaddr.city),
+  4  xmlelement("books",(select xmlagg(xmlelement("book",xmlelement("book-id",b.iid),
+  5  xmlelement("book-name",b.book_name),xmlelement("year",b.yr_release),
+  6  xmlelement("author-info",(select xmlagg(xmlelement("author",
+  7  xmlforest(a.sname.firstn as "first-name", a.sname.lastn as "last-name",
+  8  a.yofb as "yofb"))) from auth a where a.au_id = b.auo_id.au_id))))
+  9  from book_item b where b.loid.lid = l.lid))))), version '1.0')
+ 10  from lib l
+ 11  group by l.lid;
+
+XMLROOT(XMLELEMENT("ROOT",XMLAGG(XMLELEMENT("LIBRARY",XMLELEMENT("LIB-NAME",L.LI
+--------------------------------------------------------------------------------
+<?xml version="1.0"?>
+<root>
+  <library>
+    <lib-name>Humber Summit</lib-name>
+    <stnum>28   </stnum>
+    <stname>Steeles Ave</stname>
+    <city>North York</city>
+    <books>
+      <book>
+        <book-id>I1243</book-id>
+        <book-name>The Shinning</book-name>
+        <year>1977</year>
+        <author-info>
+          <author>
+            <first-name>Stephen</first-name>
+            <last-name>King</last-name>
+            <yofb>1947</yofb>
+          </author>
+        </author-info>
+      </book>
+      <book>
+        <book-id>I1248</book-id>
+        <book-name>Beloved</book-name>
+        <year>1987</year>
+        <author-info>
+          <author>
+            <first-name>Toni</first-name>
+            <last-name>Morrison</last-name>
+            <yofb>1931</yofb>
+          </author>
+        </author-info>
+      </book>
+      <book>
+        <book-id>I1249</book-id>
+        <book-name>Brave New World</book-name>
+        <year>1932</year>
+        <author-info>
+          <author>
+            <first-name>Aldous</first-name>
+            <last-name>Huxley</last-name>
+            <yofb>1984</yofb>
+          </author>
+        </author-info>
+      </book>
+    </books>
+  </library>
+</root>
+
+<?xml version="1.0"?>
+<root>
+  <library>
+    <lib-name>Albion Branch</lib-name>
+    <stnum>2    </stnum>
+    <stname>Redroad Ave</stname>
+    <city>Etobicoke</city>
+    <books>
+      <book>
+        <book-id>I1244</book-id>
+        <book-name>Harry Potter</book-name>
+        <year>1997</year>
+        <author-info>
+          <author>
+            <first-name>JK</first-name>
+            <last-name>Rowling</last-name>
+            <yofb>1965</yofb>
+          </author>
+        </author-info>
+      </book>
+      <book>
+        <book-id>I1245</book-id>
+        <book-name>1984</book-name>
+        <year>1949</year>
+        <author-info>
+          <author>
+            <first-name>George</first-name>
+            <last-name>Orwell</last-name>
+            <yofb>1903</yofb>
+          </author>
+        </author-info>
+      </book>
+      <book>
+        <book-id>I1250</book-id>
+        <book-name>The Idiot</book-name>
+        <year>1868</year>
+        <author-info>
+          <author>
+            <first-name>Fyodor</first-name>
+            <last-name>Dostoevsky</last-name>
+            <yofb>1821</yofb>
+          </author>
+        </author-info>
+      </book>
+      <book>
+        <book-id>I1251</book-id>
+        <book-name>Leaves of Grass</book-name>
+        <year>1855</year>
+        <author-info>
+          <author>
+            <first-name>Walt</first-name>
+            <last-name>Whitman</last-name>
+            <yofb>1819</yofb>
+          </author>
+        </author-info>
+      </book>
+      <book>
+        <book-id>I1252</book-id>
+        <book-name>Pride and Preju.</book-name>
+        <year>1813</year>
+        <author-info>
+          <author>
+            <first-name>Jane</first-name>
+            <last-name>Austen</last-name>
+            <yofb>1775</yofb>
+          </author>
+        </author-info>
+      </book>
+      <book>
+        <book-id>I1255</book-id>
+        <book-name>Superfudge</book-name>
+        <year>1980</year>
+        <author-info>
+          <author>
+            <first-name>Judy</first-name>
+            <last-name>Blume</last-name>
+            <yofb>1938</yofb>
+          </author>
+        </author-info>
+      </book>
+      <book>
+        <book-id>I1256</book-id>
+        <book-name>Fudgeamania</book-name>
+        <year>1990</year>
+        <author-info>
+          <author>
+            <first-name>Judy</first-name>
+            <last-name>Blume</last-name>
+            <yofb>1938</yofb>
+          </author>
+        </author-info>
+      </book>
+    </books>
+  </library>
+</root>
+
+
+
+REQUEST 7.
+------------------------------------------------------------------------------
+SQL> select xmlroot(xmlelement("account",xmlelement("account-id",a.aid),
+  2  xmlelement("first-name",a.sname.firstn),xmlelement("last-name",a.sname.lastn),
+  3  xmlelement("age",a.age(2020)),xmlelement("st-num",a.accaddr.stnum),
+  4  xmlelement("st-name",a.accaddr.stname),xmlelement("city",a.accaddr.city),
+  5  xmlelement("account-profile",(select xmlagg(xmlelement("profile-information",
+  6  xmlelement("rent-id",r.rid),xmlelement("items-out",r.itmsrent),
+  7  xmlelement("items-returned",r.itmsreturn),xmlelement("late-penalty",
+  8  r.latepenalties),xmlelement("account-balance",r.balance)))
+  9  from rented r where r.aoid.aid = a.aid))), version '1.0') as "xml"
+ 10  from acct a;
+
+xml
+--------------------------------------------------------------------------------
+<?xml version="1.0"?>
+<account>
+  <account-id>A1589</account-id>
+  <first-name>John</first-name>
+  <last-name>Jones</last-name>
+  <age>33</age>
+  <st-num>20   </st-num>
+  <st-name>Park Place</st-name>
+  <city>Toronto</city>
+  <account-profile>
+    <profile-information>
+      <rent-id>R001 </rent-id>
+      <items-out>3</items-out>
+      <items-returned>10</items-returned>
+      <late-penalty>2</late-penalty>
+      <account-balance>2.5</account-balance>
+    </profile-information>
+  </account-profile>
+</account>
+
+<?xml version="1.0"?>
+<account>
+  <account-id>A1590</account-id>
+  <first-name>Chris</first-name>
+  <last-name>McDonald</last-name>
+  <age>29</age>
+  <st-num>102  </st-num>
+  <st-name>Virginia Ave</st-name>
+  <city>Vaughan</city>
+  <account-profile>
+    <profile-information>
+      <rent-id>R002 </rent-id>
+      <items-out>1</items-out>
+      <items-returned>14</items-returned>
+      <late-penalty>0</late-penalty>
+      <account-balance>2</account-balance>
+    </profile-information>
+  </account-profile>
+</account>
+
+<?xml version="1.0"?>
+<account>
+  <account-id>A1591</account-id>
+  <first-name>David</first-name>
+  <last-name>Berry</last-name>
+  <age>32</age>
+  <st-num>19   </st-num>
+  <st-name>Atlantic Ave</st-name>
+  <city>Brampton</city>
+  <account-profile>
+    <profile-information>
+      <rent-id>R003 </rent-id>
+      <items-out>4</items-out>
+      <items-returned>25</items-returned>
+      <late-penalty>5</late-penalty>
+      <account-balance>4.5</account-balance>
+    </profile-information>
+  </account-profile>
+</account>
+
+<?xml version="1.0"?>
+<account>
+  <account-id>A1592</account-id>
+  <first-name>Mary</first-name>
+  <last-name>Stevenson</last-name>
+  <age>28</age>
+  <st-num>19   </st-num>
+  <st-name>Blues St</st-name>
+  <city>Barrie</city>
+  <account-profile>
+    <profile-information>
+      <rent-id>R004 </rent-id>
+      <items-out>6</items-out>
+      <items-returned>30</items-returned>
+      <late-penalty>0</late-penalty>
+      <account-balance>2.5</account-balance>
+    </profile-information>
+  </account-profile>
+</account>
+
+<?xml version="1.0"?>
+<account>
+  <account-id>A1593</account-id>
+  <first-name>Peter</first-name>
+  <last-name>Burns</last-name>
+  <age>21</age>
+  <st-num>28   </st-num>
+  <st-name>Bloor St</st-name>
+  <city>Toronto</city>
+  <account-profile>
+    <profile-information>
+      <rent-id>R005 </rent-id>
+      <items-out>3</items-out>
+      <items-returned>32</items-returned>
+      <late-penalty>1</late-penalty>
+      <account-balance>0</account-balance>
+    </profile-information>
+  </account-profile>
+</account>
+
+<?xml version="1.0"?>
+<account>
+  <account-id>A1594</account-id>
+  <first-name>Amy</first-name>
+  <last-name>Thompson</last-name>
+  <age>27</age>
+  <st-num>89   </st-num>
+  <st-name>Weston Rd</st-name>
+  <city>Woodbridge</city>
+  <account-profile/>
+</account>
+
+<?xml version="1.0"?>
+<account>
+  <account-id>A1595</account-id>
+  <first-name>Lisa</first-name>
+  <last-name>Robinson</last-name>
+  <age>25</age>
+  <st-num>1    </st-num>
+  <st-name>Pacific Ave</st-name>
+  <city>Newmarket</city>
+  <account-profile>
+    <profile-information>
+      <rent-id>R006 </rent-id>
+      <items-out>1</items-out>
+      <items-returned>35</items-returned>
+      <late-penalty>1</late-penalty>
+      <account-balance>4.5</account-balance>
+    </profile-information>
+  </account-profile>
+</account>
+
+<?xml version="1.0"?>
+<account>
+  <account-id>A1596</account-id>
+  <first-name>Josie</first-name>
+  <last-name>Smith</last-name>
+  <age>19</age>
+  <st-num>83   </st-num>
+  <st-name>King St</st-name>
+  <city>Toronto</city>
+  <account-profile>
+    <profile-information>
+      <rent-id>R007 </rent-id>
+      <items-out>4</items-out>
+      <items-returned>23</items-returned>
+      <late-penalty>0</late-penalty>
+      <account-balance>0</account-balance>
+    </profile-information>
+  </account-profile>
+</account>
+
+<?xml version="1.0"?>
+<account>
+  <account-id>A1597</account-id>
+  <first-name>Jimmy</first-name>
+  <last-name>Jonas</last-name>
+  <age>21</age>
+  <st-num>7    </st-num>
+  <st-name>Green Rd</st-name>
+  <city>Markham</city>
+  <account-profile>
+    <profile-information>
+      <rent-id>R008 </rent-id>
+      <items-out>4</items-out>
+      <items-returned>65</items-returned>
+      <late-penalty>0</late-penalty>
+      <account-balance>0</account-balance>
+    </profile-information>
+  </account-profile>
+</account>
+
+<?xml version="1.0"?>
+<account>
+  <account-id>A1598</account-id>
+  <first-name>Alex</first-name>
+  <last-name>Turner</last-name>
+  <age>23</age>
+  <st-num>100  </st-num>
+  <st-name>Steeles Ave</st-name>
+  <city>North York</city>
+  <account-profile/>
+</account>
+
+<?xml version="1.0"?>
+<account>
+  <account-id>A1599</account-id>
+  <first-name>Greg</first-name>
+  <last-name>Picket</last-name>
+  <age>24</age>
+  <st-num>9    </st-num>
+  <st-name>Jane St</st-name>
+  <city>Maple</city>
+  <account-profile>
+    <profile-information>
+      <rent-id>R009 </rent-id>
+      <items-out>3</items-out>
+      <items-returned>32</items-returned>
+      <late-penalty>1</late-penalty>
+      <account-balance>1.5</account-balance>
+    </profile-information>
+  </account-profile>
+</account>
+
+<?xml version="1.0"?>
+<account>
+  <account-id>A1600</account-id>
+  <first-name>Tania</first-name>
+  <last-name>Marcy</last-name>
+  <age>28</age>
+  <st-num>57   </st-num>
+  <st-name>Yellowtree Rd</st-name>
+  <city>Richmondhill</city>
+  <account-profile>
+    <profile-information>
+      <rent-id>R010 </rent-id>
+      <items-out>7</items-out>
+      <items-returned>21</items-returned>
+      <late-penalty>2</late-penalty>
+      <account-balance>0</account-balance>
+    </profile-information>
+  </account-profile>
+</account>
+
+<?xml version="1.0"?>
+<account>
+  <account-id>A1601</account-id>
+  <first-name>Mario</first-name>
+  <last-name>Luigi</last-name>
+  <age>57</age>
+  <st-num>99   </st-num>
+  <st-name>Bloor St</st-name>
+  <city>Toronto</city>
+  <account-profile>
+    <profile-information>
+      <rent-id>R011 </rent-id>
+      <items-out>6</items-out>
+      <items-returned>26</items-returned>
+      <late-penalty>0</late-penalty>
+      <account-balance>0</account-balance>
+    </profile-information>
+  </account-profile>
+</account>
+
+<?xml version="1.0"?>
+<account>
+  <account-id>A1602</account-id>
+  <first-name>Chris</first-name>
+  <last-name>Staven</last-name>
+  <age>51</age>
+  <st-num>180  </st-num>
+  <st-name>Dufferin St</st-name>
+  <city>Thornhill</city>
+  <account-profile/>
+</account>
+
+<?xml version="1.0"?>
+<account>
+  <account-id>A1603</account-id>
+  <first-name>Calvin</first-name>
+  <last-name>Klein</last-name>
+  <age>21</age>
+  <st-num>12   </st-num>
+  <st-name>Bluewalker Lane</st-name>
+  <city>Bradford</city>
+  <account-profile>
+    <profile-information>
+      <rent-id>R012 </rent-id>
+      <items-out>6</items-out>
+      <items-returned>23</items-returned>
+      <late-penalty>0</late-penalty>
+      <account-balance>.5</account-balance>
+    </profile-information>
+  </account-profile>
+</account>
+
+
+
+
+REQUEST 8.
+------------------------------------------------------------------------------
+SQL> select xmlroot(xmlelement("branch",xmlattributes(l.lid as "id"),
+  2  xmlelement("branch-name", l.libname),xmlelement("address",
+  3  xmlforest(l.libaddr.stnum as "street-number",l.libaddr.stname as
+  4  "street-name",l.libaddr.city as "city",l.libaddr.postcode as
+  5  "postal-code",l.libaddr.postcode))), version '1.0')
+  6  from lib l;
+
+XMLROOT(XMLELEMENT("BRANCH",XMLATTRIBUTES(L.LIDAS"ID"),XMLELEMENT("BRANCH-NAME",
+--------------------------------------------------------------------------------
+<?xml version="1.0"?>
+<branch id="001">
+  <branch-name>Humber Summit</branch-name>
+  <address>
+    <street-number>28   </street-number>
+    <street-name>Steeles Ave</street-name>
+    <city>North York</city>
+    <postal-code>K3J2G6</postal-code>
+    <POSTCODE>K3J2G6</POSTCODE>
+  </address>
+</branch>
+
+<?xml version="1.0"?>
+<branch id="002">
+  <branch-name>Albion Branch</branch-name>
+  <address>
+    <street-number>2    </street-number>
+    <street-name>Redroad Ave</street-name>
+    <city>Etobicoke</city>
+    <postal-code>H3H6S8</postal-code>
+    <POSTCODE>H3H6S8</POSTCODE>
+  </address>
+</branch>
+
+
+
+REQUEST 9.
+------------------------------------------------------------------------------
+SQL> select xmlroot(xmlelement("library",xmlattributes(t.ioid.loid.lid as "id"),
+  2  xmlagg(xmlelement("transaction",xmlattributes(t.tid as "id"),
+  3  xmlelement("acc-id",t.aoid.aid),xmlelement("name",
+  4  xmlforest(t.aoid.sname.firstn as "first-name", t.aoid.sname.lastn as
+  5  "last-name")),xmlelement("rented",xmlelement("item-id",v.iid),
+  6  xmlelement("movie",v.vid_name),xmlelement("dir",v.auo_id.sname.lastn),
+  7  xmlelement("year",v.yr_release)),xmlelement("due-date",t.duedate)))),
+  8  version '1.0')
+  9  from txn t, video_item v
+ 10  where v.iid in t.ioid.iid
+ 11  group by t.ioid.loid.lid;
+
+XMLROOT(XMLELEMENT("LIBRARY",XMLATTRIBUTES(T.IOID.LOID.LIDAS"ID"),XMLAGG(XMLELEM
+--------------------------------------------------------------------------------
+<?xml version="1.0"?>
+<library id="001">
+  <transaction id="T10005">
+    <acc-id>A1600</acc-id>
+    <name>
+      <first-name>Tania</first-name>
+      <last-name>Marcy</last-name>
+    </name>
+    <rented>
+      <item-id>I1242</item-id>
+      <movie>Wall E</movie>
+      <dir>Stanton</dir>
+      <year>2008</year>
+    </rented>
+    <due-date>2020-11-20</due-date>
+  </transaction>
+  <transaction id="T10004">
+    <acc-id>A1599</acc-id>
+    <name>
+      <first-name>Greg</first-name>
+      <last-name>Picket</last-name>
+    </name>
+    <rented>
+      <item-id>I1258</item-id>
+      <movie>Little Big Man</movie>
+      <dir>Penn</dir>
+      <year>1970</year>
+    </rented>
+    <due-date>2020-11-15</due-date>
+  </transaction>
+  <transaction id="T10008">
+    <acc-id>A1589</acc-id>
+    <name>
+      <first-name>John</first-name>
+      <last-name>Jones</last-name>
+    </name>
+    <rented>
+      <item-id>I1257</item-id>
+      <movie>Casino</movie>
+      <dir>Scorsese</dir>
+      <year>1995</year>
+    </rented>
+    <due-date>2020-11-20</due-date>
+  </transaction>
+  <transaction id="T10002">
+    <acc-id>A1594</acc-id>
+    <name>
+      <first-name>Amy</first-name>
+      <last-name>Thompson</last-name>
+    </name>
+    <rented>
+      <item-id>I1247</item-id>
+      <movie>Forget Sarah Marsh</movie>
+      <dir>Stoller</dir>
+      <year>2008</year>
+    </rented>
+    <due-date>2020-11-15</due-date>
+  </transaction>
+  <transaction id="T10003">
+    <acc-id>A1595</acc-id>
+    <name>
+      <first-name>Lisa</first-name>
+      <last-name>Robinson</last-name>
+    </name>
+    <rented>
+      <item-id>I1247</item-id>
+      <movie>Forget Sarah Marsh</movie>
+      <dir>Stoller</dir>
+      <year>2008</year>
+    </rented>
+    <due-date>2020-11-15</due-date>
+  </transaction>
+</library>
+
+<?xml version="1.0"?>
+<library id="002">
+  <transaction id="T10001">
+    <acc-id>A1593</acc-id>
+    <name>
+      <first-name>Peter</first-name>
+      <last-name>Burns</last-name>
+    </name>
+    <rented>
+      <item-id>I1246</item-id>
+      <movie>Pulp Fiction</movie>
+      <dir>Tarantino</dir>
+      <year>1994</year>
+    </rented>
+    <due-date>2020-11-15</due-date>
+  </transaction>
+  <transaction id="T10007">
+    <acc-id>A1602</acc-id>
+    <name>
+      <first-name>Chris</first-name>
+      <last-name>Staven</last-name>
+    </name>
+    <rented>
+      <item-id>I1253</item-id>
+      <movie>Superbad</movie>
+      <dir>Mottola</dir>
+      <year>2007</year>
+    </rented>
+    <due-date>2020-11-20</due-date>
+  </transaction>
+  <transaction id="T10006">
+    <acc-id>A1601</acc-id>
+    <name>
+      <first-name>Mario</first-name>
+      <last-name>Luigi</last-name>
+    </name>
+    <rented>
+      <item-id>I1253</item-id>
+      <movie>Superbad</movie>
+      <dir>Mottola</dir>
+      <year>2007</year>
+    </rented>
+    <due-date>2020-11-20</due-date>
+  </transaction>
+</library>
+
+
+
+REQUEST 10.
+------------------------------------------------------------------------------
+SQL> select xmlroot(xmlelement("library",xmlattributes(t.ioid.loid.lid as "id"),
+  2  xmlagg(xmlelement("transaction",xmlattributes(t.tid as "id"),
+  3  xmlelement("acc-id",t.aoid.aid),xmlelement("name",
+  4  xmlforest(t.aoid.sname.firstn as "first-name", t.aoid.sname.lastn as
+  5  "last-name")),xmlelement("rented",
+  6  xmlelement("item-id",b.iid),xmlelement("book",b.book_name),
+  7  xmlelement("auth",b.auo_id.sname.lastn),xmlelement("year",b.yr_release)),
+  8  xmlelement("due-date",t.duedate)))), version '1.0')
+  9  from txn t, book_item b
+ 10  where b.iid = t.ioid.iid
+ 11  group by t.ioid.loid.lid;
+
+XMLROOT(XMLELEMENT("LIBRARY",XMLATTRIBUTES(T.IOID.LOID.LIDAS"ID"),XMLAGG(XMLELEM
+--------------------------------------------------------------------------------
+<?xml version="1.0"?>
+<library id="001">
+  <transaction id="T10012">
+    <acc-id>A1603</acc-id>
+    <name>
+      <first-name>Calvin</first-name>
+      <last-name>Klein</last-name>
+    </name>
+    <rented>
+      <item-id>I1243</item-id>
+      <book>The Shinning</book>
+      <auth>King</auth>
+      <year>1977</year>
+    </rented>
+    <due-date>2020-11-25</due-date>
+  </transaction>
+</library>
+
+<?xml version="1.0"?>
+<library id="002">
+  <transaction id="T10011">
+    <acc-id>A1602</acc-id>
+    <name>
+      <first-name>Chris</first-name>
+      <last-name>Staven</last-name>
+    </name>
+    <rented>
+      <item-id>I1244</item-id>
+      <book>Harry Potter</book>
+      <auth>Rowling</auth>
+      <year>1997</year>
+    </rented>
+    <due-date>2020-11-25</due-date>
+  </transaction>
+  <transaction id="T10014">
+    <acc-id>A1600</acc-id>
+    <name>
+      <first-name>Tania</first-name>
+      <last-name>Marcy</last-name>
+    </name>
+    <rented>
+      <item-id>I1256</item-id>
+      <book>Fudgeamania</book>
+      <auth>Blume</auth>
+      <year>1990</year>
+    </rented>
+    <due-date>2020-11-25</due-date>
+  </transaction>
+  <transaction id="T10013">
+    <acc-id>A1591</acc-id>
+    <name>
+      <first-name>David</first-name>
+      <last-name>Berry</last-name>
+    </name>
+    <rented>
+      <item-id>I1255</item-id>
+      <book>Superfudge</book>
+      <auth>Blume</auth>
+      <year>1980</year>
+    </rented>
+    <due-date>2020-11-25</due-date>
+  </transaction>
+  <transaction id="T10015">
+    <acc-id>A1601</acc-id>
+    <name>
+      <first-name>Mario</first-name>
+      <last-name>Luigi</last-name>
+    </name>
+    <rented>
+      <item-id>I1252</item-id>
+      <book>Pride and Preju.</book>
+      <auth>Austen</auth>
+      <year>1813</year>
+    </rented>
+    <due-date>2020-11-25</due-date>
+  </transaction>
+  <transaction id="T10018">
+    <acc-id>A1590</acc-id>
+    <name>
+      <first-name>Chris</first-name>
+      <last-name>McDonald</last-name>
+    </name>
+    <rented>
+      <item-id>I1252</item-id>
+      <book>Pride and Preju.</book>
+      <auth>Austen</auth>
+      <year>1813</year>
+    </rented>
+    <due-date>2020-11-25</due-date>
+  </transaction>
+  <transaction id="T10019">
+    <acc-id>A1590</acc-id>
+    <name>
+      <first-name>Chris</first-name>
+      <last-name>McDonald</last-name>
+    </name>
+    <rented>
+      <item-id>I1251</item-id>
+      <book>Leaves of Grass</book>
+      <auth>Whitman</auth>
+      <year>1855</year>
+    </rented>
+    <due-date>2020-11-25</due-date>
+  </transaction>
+  <transaction id="T10016">
+    <acc-id>A1591</acc-id>
+    <name>
+      <first-name>David</first-name>
+      <last-name>Berry</last-name>
+    </name>
+    <rented>
+      <item-id>I1251</item-id>
+      <book>Leaves of Grass</book>
+      <auth>Whitman</auth>
+      <year>1855</year>
+    </rented>
+    <due-date>2020-11-25</due-date>
+  </transaction>
+  <transaction id="T10009">
+    <acc-id>A1590</acc-id>
+    <name>
+      <first-name>Chris</first-name>
+      <last-name>McDonald</last-name>
+    </name>
+    <rented>
+      <item-id>I1250</item-id>
+      <book>The Idiot</book>
+      <auth>Dostoevsky</auth>
+      <year>1868</year>
+    </rented>
+    <due-date>2020-11-25</due-date>
+  </transaction>
+  <transaction id="T10010">
+    <acc-id>A1591</acc-id>
+    <name>
+      <first-name>David</first-name>
+      <last-name>Berry</last-name>
+    </name>
+    <rented>
+      <item-id>I1245</item-id>
+      <book>1984</book>
+      <auth>Orwell</auth>
+      <year>1949</year>
+    </rented>
+    <due-date>2020-11-25</due-date>
+  </transaction>
+</library>
+
+
+
+REQUEST 11.
+------------------------------------------------------------------------------
+SQL> select xmlroot(xmlelement("toronto",xmlagg(xmlelement("account",
+  2  xmlelement("acc-id", a.aid),xmlelement("name",
+  3  xmlforest(a.sname.firstn as "first-name", a.sname.lastn as
+  4  "last-name")),xmlelement("address",
+  5  xmlforest(a.accaddr.stnum as "street-number", a.accaddr.stname as
+  6  "street-name", a.accaddr.city as "city", a.accaddr.postcode as
+  7  "postal-code")),xmlelement("phone",a.phone),xmlelement("yofb",a.yofb)))),
+  8  version '1.0') from acct a
+  9  where a.accaddr.city = 'Toronto';
+
+XMLROOT(XMLELEMENT("TORONTO",XMLAGG(XMLELEMENT("ACCOUNT",XMLELEMENT("ACC-ID",A.A
+--------------------------------------------------------------------------------
+<?xml version="1.0"?>
+<toronto>
+  <account>
+    <acc-id>A1589</acc-id>
+    <name>
+      <first-name>John</first-name>
+      <last-name>Jones</last-name>
+    </name>
+    <address>
+      <street-number>20   </street-number>
+      <street-name>Park Place</street-name>
+      <city>Toronto</city>
+      <postal-code>L7A0A8</postal-code>
+    </address>
+    <phone>4169671111</phone>
+    <yofb>1987</yofb>
+  </account>
+  <account>
+    <acc-id>A1593</acc-id>
+    <name>
+      <first-name>Peter</first-name>
+      <last-name>Burns</last-name>
+    </name>
+    <address>
+      <street-number>28   </street-number>
+      <street-name>Bloor St</street-name>
+      <city>Toronto</city>
+      <postal-code>L8D3H3</postal-code>
+    </address>
+    <phone>4164875210</phone>
+    <yofb>1999</yofb>
+  </account>
+  <account>
+    <acc-id>A1596</acc-id>
+    <name>
+      <first-name>Josie</first-name>
+      <last-name>Smith</last-name>
+    </name>
+    <address>
+      <street-number>83   </street-number>
+      <street-name>King St</street-name>
+      <city>Toronto</city>
+      <postal-code>N3N9F3</postal-code>
+    </address>
+    <phone>4168750369</phone>
+    <yofb>2001</yofb>
+  </account>
+  <account>
+    <acc-id>A1601</acc-id>
+    <name>
+      <first-name>Mario</first-name>
+      <last-name>Luigi</last-name>
+    </name>
+    <address>
+      <street-number>99   </street-number>
+      <street-name>Bloor St</street-name>
+      <city>Toronto</city>
+      <postal-code>G2G3J3</postal-code>
+    </address>
+    <phone>5192262247</phone>
+    <yofb>1963</yofb>
+  </account>
+</toronto>
+
+
+
+REQUEST 12.
+------------------------------------------------------------------------------
+SQL> select xmlroot(xmlelement("author",xmlattributes(b.auo_id.au_id as "id"),
+  2  xmlagg(xmlelement("book",xmlattributes(b.iid as "id"),
+  3  xmlelement("book-title", b.book_name),xmlelement("year", b.yr_release)))),
+  4  version '1.0')
+  5  from book_item b
+  6  group by b.auo_id.au_id;
+
+XMLROOT(XMLELEMENT("AUTHOR",XMLATTRIBUTES(B.AUO_ID.AU_IDAS"ID"),XMLAGG(XMLELEMEN
+--------------------------------------------------------------------------------
+<?xml version="1.0"?>
+<author id="AU001">
+  <book id="I1243">
+    <book-title>The Shinning</book-title>
+    <year>1977</year>
+  </book>
+</author>
+
+<?xml version="1.0"?>
+<author id="AU002">
+  <book id="I1244">
+    <book-title>Harry Potter</book-title>
+    <year>1997</year>
+  </book>
+</author>
+
+<?xml version="1.0"?>
+<author id="AU003">
+  <book id="I1245">
+    <book-title>1984</book-title>
+    <year>1949</year>
+  </book>
+</author>
+
+<?xml version="1.0"?>
+<author id="AU004">
+  <book id="I1250">
+    <book-title>The Idiot</book-title>
+    <year>1868</year>
+  </book>
+</author>
+
+<?xml version="1.0"?>
+<author id="AU005">
+  <book id="I1251">
+    <book-title>Leaves of Grass</book-title>
+    <year>1855</year>
+  </book>
+</author>
+
+<?xml version="1.0"?>
+<author id="AU006">
+  <book id="I1252">
+    <book-title>Pride and Preju.</book-title>
+    <year>1813</year>
+  </book>
+</author>
+
+<?xml version="1.0"?>
+<author id="AU007">
+  <book id="I1248">
+    <book-title>Beloved</book-title>
+    <year>1987</year>
+  </book>
+</author>
+
+<?xml version="1.0"?>
+<author id="AU008">
+  <book id="I1249">
+    <book-title>Brave New World</book-title>
+    <year>1932</year>
+  </book>
+</author>
+
+<?xml version="1.0"?>
+<author id="AU009">
+  <book id="I1255">
+    <book-title>Superfudge</book-title>
+    <year>1980</year>
+  </book>
+  <book id="I1256">
+    <book-title>Fudgeamania</book-title>
+    <year>1990</year>
+  </book>
+</author>
+
+
+
+------------------------------------------------------------------------------
+------------------------------------------------------------------------------
+
+QUESTION 3 XSU QUERIES
+
+1. GET ALL TRANSACTIONS FROM LIBRARY 002
+------------------------------------------------------------------------------
+[danpops@sit ~]$ OracleXML getXML -user "grp6/here4grp6" \
+> -conn "jdbc:oracle:thin:@sit.itec.yorku.ca:1521:studb10g" \
+> -rowsetTag "transaction" -rowTag "account" \
+> "select t.aoid.aid as an, t.aoid.sname.fullname() as aname, \
+> t.duedate as duedate from txn t where t.ioid.loid.lid = '002'"
+<?xml version = '1.0'?>
+<transaction>
+   <account num="1">
+      <AN>A1593</AN>
+      <ANAME>Peter Burns</ANAME>
+      <DUEDATE>2020-11-15 00:00:00</DUEDATE>
+   </account>
+   <account num="2">
+      <AN>A1601</AN>
+      <ANAME>Mario Luigi</ANAME>
+      <DUEDATE>2020-11-20 00:00:00</DUEDATE>
+   </account>
+   <account num="3">
+      <AN>A1602</AN>
+      <ANAME>Chris Staven</ANAME>
+      <DUEDATE>2020-11-20 00:00:00</DUEDATE>
+   </account>
+   <account num="4">
+      <AN>A1590</AN>
+      <ANAME>Chris McDonald</ANAME>
+      <DUEDATE>2020-11-25 00:00:00</DUEDATE>
+   </account>
+   <account num="5">
+      <AN>A1591</AN>
+      <ANAME>David Berry</ANAME>
+      <DUEDATE>2020-11-25 00:00:00</DUEDATE>
+   </account>
+   <account num="6">
+      <AN>A1602</AN>
+      <ANAME>Chris Staven</ANAME>
+      <DUEDATE>2020-11-25 00:00:00</DUEDATE>
+   </account>
+   <account num="7">
+      <AN>A1591</AN>
+      <ANAME>David Berry</ANAME>
+      <DUEDATE>2020-11-25 00:00:00</DUEDATE>
+   </account>
+   <account num="8">
+      <AN>A1600</AN>
+      <ANAME>Tania Marcy</ANAME>
+      <DUEDATE>2020-11-25 00:00:00</DUEDATE>
+   </account>
+   <account num="9">
+      <AN>A1601</AN>
+      <ANAME>Mario Luigi</ANAME>
+      <DUEDATE>2020-11-25 00:00:00</DUEDATE>
+   </account>
+   <account num="10">
+      <AN>A1591</AN>
+      <ANAME>David Berry</ANAME>
+      <DUEDATE>2020-11-25 00:00:00</DUEDATE>
+   </account>
+   <account num="11">
+      <AN>A1590</AN>
+      <ANAME>Chris McDonald</ANAME>
+      <DUEDATE>2020-11-25 00:00:00</DUEDATE>
+   </account>
+   <account num="12">
+      <AN>A1590</AN>
+      <ANAME>Chris McDonald</ANAME>
+      <DUEDATE>2020-11-25 00:00:00</DUEDATE>
+   </account>
+</transaction>
+
+
+
+2. GET ALL BOOKS FROM LIBRARY 002
+------------------------------------------------------------------------------
+[danpops@sit ~]$ OracleXML getXML -user "grp6/here4grp6" \
+> -conn "jdbc:oracle:thin:@sit.itec.yorku.ca:1521:studb10g" \
+> -rowsetTag "library002" -rowTag "book" \
+> "select b.iid as id, b.book_name as title, b.auo_id.sname as author, \
+> b.yr_release as year from book_item b where b.loid.lid = '002'"
+<?xml version = '1.0'?>
+<library002>
+   <book num="1">
+      <ID>I1244</ID>
+      <TITLE>Harry Potter</TITLE>
+      <AUTHOR>
+         <FIRSTN>JK</FIRSTN>
+         <LASTN>Rowling</LASTN>
+      </AUTHOR>
+      <YEAR>1997</YEAR>
+   </book>
+   <book num="2">
+      <ID>I1245</ID>
+      <TITLE>1984</TITLE>
+      <AUTHOR>
+         <FIRSTN>George</FIRSTN>
+         <LASTN>Orwell</LASTN>
+      </AUTHOR>
+      <YEAR>1949</YEAR>
+   </book>
+   <book num="3">
+      <ID>I1250</ID>
+      <TITLE>The Idiot</TITLE>
+      <AUTHOR>
+         <FIRSTN>Fyodor</FIRSTN>
+         <LASTN>Dostoevsky</LASTN>
+      </AUTHOR>
+      <YEAR>1868</YEAR>
+   </book>
+   <book num="4">
+      <ID>I1251</ID>
+      <TITLE>Leaves of Grass</TITLE>
+      <AUTHOR>
+         <FIRSTN>Walt</FIRSTN>
+         <LASTN>Whitman</LASTN>
+      </AUTHOR>
+      <YEAR>1855</YEAR>
+   </book>
+   <book num="5">
+      <ID>I1252</ID>
+      <TITLE>Pride and Preju.</TITLE>
+      <AUTHOR>
+         <FIRSTN>Jane</FIRSTN>
+         <LASTN>Austen</LASTN>
+      </AUTHOR>
+      <YEAR>1813</YEAR>
+   </book>
+   <book num="6">
+      <ID>I1255</ID>
+      <TITLE>Superfudge</TITLE>
+      <AUTHOR>
+         <FIRSTN>Judy</FIRSTN>
+         <LASTN>Blume</LASTN>
+      </AUTHOR>
+      <YEAR>1980</YEAR>
+   </book>
+   <book num="7">
+      <ID>I1256</ID>
+      <TITLE>Fudgeamania</TITLE>
+      <AUTHOR>
+         <FIRSTN>Judy</FIRSTN>
+         <LASTN>Blume</LASTN>
+      </AUTHOR>
+      <YEAR>1990</YEAR>
+   </book>
+</library002>
+
+
+
+3. GET ALL MOVIES FROM LIBRARY 001
+------------------------------------------------------------------------------
+[danpops@sit ~]$ OracleXML getXML -user "grp6/here4grp6" \
+> -conn "jdbc:oracle:thin:@sit.itec.yorku.ca:1521:studb10g" \
+> -rowsetTag "library001" -rowTag "video" \
+> "select v.iid as id, v.vid_name as title, v.auo_id.sname as director, \
+> v.yr_release as year from video_item v where v.loid.lid = '001'"
+<?xml version = '1.0'?>
+<library001>
+   <video num="1">
+      <ID>I1247</ID>
+      <TITLE>Forget Sarah Marsh</TITLE>
+      <DIRECTOR>
+         <FIRSTN>Nicholas</FIRSTN>
+         <LASTN>Stoller</LASTN>
+      </DIRECTOR>
+      <YEAR>2008</YEAR>
+   </video>
+   <video num="2">
+      <ID>I1258</ID>
+      <TITLE>Little Big Man</TITLE>
+      <DIRECTOR>
+         <FIRSTN>Arthur</FIRSTN>
+         <LASTN>Penn</LASTN>
+      </DIRECTOR>
+      <YEAR>1970</YEAR>
+   </video>
+   <video num="3">
+      <ID>I1241</ID>
+      <TITLE>Kill Bill Vol 1</TITLE>
+      <DIRECTOR>
+         <FIRSTN>Quentin</FIRSTN>
+         <LASTN>Tarantino</LASTN>
+      </DIRECTOR>
+      <YEAR>2003</YEAR>
+   </video>
+   <video num="4">
+      <ID>I1242</ID>
+      <TITLE>Wall E</TITLE>
+      <DIRECTOR>
+         <FIRSTN>Andrew</FIRSTN>
+         <LASTN>Stanton</LASTN>
+      </DIRECTOR>
+      <YEAR>2008</YEAR>
+   </video>
+   <video num="5">
+      <ID>I1257</ID>
+      <TITLE>Casino</TITLE>
+      <DIRECTOR>
+         <FIRSTN>Martin</FIRSTN>
+         <LASTN>Scorsese</LASTN>
+      </DIRECTOR>
+      <YEAR>1995</YEAR>
+   </video>
+   <video num="6">
+      <ID>I1259</ID>
+      <TITLE>Wolf of Wall St</TITLE>
+      <DIRECTOR>
+         <FIRSTN>Martin</FIRSTN>
+         <LASTN>Scorsese</LASTN>
+      </DIRECTOR>
+      <YEAR>2013</YEAR>
+   </video>
+</library001>
+
+
+
+4. GET ACCOUNT INFORMATION FOR ALL USERS INCLUDING FULL NAME AND ADDRESS
+------------------------------------------------------------------------------
+[danpops@sit ~]$ OracleXML getXML -user "grp6/here4grp6" \
+> -conn "jdbc:oracle:thin:@sit.itec.yorku.ca:1521:studb10g" \
+> -rowsetTag "accounts" -rowTag "account" \
+> "select a.aid as accountid, a.sname.fullname() as accountname, \
+> a.accaddr as accountaddr, a.age(2020) as age from acct a"
+<?xml version = '1.0'?>
+<accounts>
+   <account num="1">
+      <ACCOUNTID>A1589</ACCOUNTID>
+      <ACCOUNTNAME>John Jones</ACCOUNTNAME>
+      <ACCOUNTADDR>
+         <STNUM>20   </STNUM>
+         <STNAME>Park Place</STNAME>
+         <CITY>Toronto</CITY>
+         <POSTCODE>L7A0A8</POSTCODE>
+      </ACCOUNTADDR>
+      <AGE>33</AGE>
+   </account>
+   <account num="2">
+      <ACCOUNTID>A1590</ACCOUNTID>
+      <ACCOUNTNAME>Chris McDonald</ACCOUNTNAME>
+      <ACCOUNTADDR>
+         <STNUM>102  </STNUM>
+         <STNAME>Virginia Ave</STNAME>
+         <CITY>Vaughan</CITY>
+         <POSTCODE>O3J3L3</POSTCODE>
+      </ACCOUNTADDR>
+      <AGE>29</AGE>
+   </account>
+   <account num="3">
+      <ACCOUNTID>A1591</ACCOUNTID>
+      <ACCOUNTNAME>David Berry</ACCOUNTNAME>
+      <ACCOUNTADDR>
+         <STNUM>19   </STNUM>
+         <STNAME>Atlantic Ave</STNAME>
+         <CITY>Brampton</CITY>
+         <POSTCODE>L3L9S9</POSTCODE>
+      </ACCOUNTADDR>
+      <AGE>32</AGE>
+   </account>
+   <account num="4">
+      <ACCOUNTID>A1592</ACCOUNTID>
+      <ACCOUNTNAME>Mary Stevenson</ACCOUNTNAME>
+      <ACCOUNTADDR>
+         <STNUM>19   </STNUM>
+         <STNAME>Blues St</STNAME>
+         <CITY>Barrie</CITY>
+         <POSTCODE>J3D5KS</POSTCODE>
+      </ACCOUNTADDR>
+      <AGE>28</AGE>
+   </account>
+   <account num="5">
+      <ACCOUNTID>A1593</ACCOUNTID>
+      <ACCOUNTNAME>Peter Burns</ACCOUNTNAME>
+      <ACCOUNTADDR>
+         <STNUM>28   </STNUM>
+         <STNAME>Bloor St</STNAME>
+         <CITY>Toronto</CITY>
+         <POSTCODE>L8D3H3</POSTCODE>
+      </ACCOUNTADDR>
+      <AGE>21</AGE>
+   </account>
+   <account num="6">
+      <ACCOUNTID>A1594</ACCOUNTID>
+      <ACCOUNTNAME>Amy Thompson</ACCOUNTNAME>
+      <ACCOUNTADDR>
+         <STNUM>89   </STNUM>
+         <STNAME>Weston Rd</STNAME>
+         <CITY>Woodbridge</CITY>
+         <POSTCODE>G3G9D7</POSTCODE>
+      </ACCOUNTADDR>
+      <AGE>27</AGE>
+   </account>
+   <account num="7">
+      <ACCOUNTID>A1595</ACCOUNTID>
+      <ACCOUNTNAME>Lisa Robinson</ACCOUNTNAME>
+      <ACCOUNTADDR>
+         <STNUM>1    </STNUM>
+         <STNAME>Pacific Ave</STNAME>
+         <CITY>Newmarket</CITY>
+         <POSTCODE>J3H9S9</POSTCODE>
+      </ACCOUNTADDR>
+      <AGE>25</AGE>
+   </account>
+   <account num="8">
+      <ACCOUNTID>A1596</ACCOUNTID>
+      <ACCOUNTNAME>Josie Smith</ACCOUNTNAME>
+      <ACCOUNTADDR>
+         <STNUM>83   </STNUM>
+         <STNAME>King St</STNAME>
+         <CITY>Toronto</CITY>
+         <POSTCODE>N3N9F3</POSTCODE>
+      </ACCOUNTADDR>
+      <AGE>19</AGE>
+   </account>
+   <account num="9">
+      <ACCOUNTID>A1597</ACCOUNTID>
+      <ACCOUNTNAME>Jimmy Jonas</ACCOUNTNAME>
+      <ACCOUNTADDR>
+         <STNUM>7    </STNUM>
+         <STNAME>Green Rd</STNAME>
+         <CITY>Markham</CITY>
+         <POSTCODE>K7Z3J3</POSTCODE>
+      </ACCOUNTADDR>
+      <AGE>21</AGE>
+   </account>
+   <account num="10">
+      <ACCOUNTID>A1598</ACCOUNTID>
+      <ACCOUNTNAME>Alex Turner</ACCOUNTNAME>
+      <ACCOUNTADDR>
+         <STNUM>100  </STNUM>
+         <STNAME>Steeles Ave</STNAME>
+         <CITY>North York</CITY>
+         <POSTCODE>O3O2K1</POSTCODE>
+      </ACCOUNTADDR>
+      <AGE>23</AGE>
+   </account>
+   <account num="11">
+      <ACCOUNTID>A1599</ACCOUNTID>
+      <ACCOUNTNAME>Greg Picket</ACCOUNTNAME>
+      <ACCOUNTADDR>
+         <STNUM>9    </STNUM>
+         <STNAME>Jane St</STNAME>
+         <CITY>Maple</CITY>
+         <POSTCODE>L6A9K3</POSTCODE>
+      </ACCOUNTADDR>
+      <AGE>24</AGE>
+   </account>
+   <account num="12">
+      <ACCOUNTID>A1600</ACCOUNTID>
+      <ACCOUNTNAME>Tania Marcy</ACCOUNTNAME>
+      <ACCOUNTADDR>
+         <STNUM>57   </STNUM>
+         <STNAME>Yellowtree Rd</STNAME>
+         <CITY>Richmondhill</CITY>
+         <POSTCODE>J3J7A7</POSTCODE>
+      </ACCOUNTADDR>
+      <AGE>28</AGE>
+   </account>
+   <account num="13">
+      <ACCOUNTID>A1601</ACCOUNTID>
+      <ACCOUNTNAME>Mario Luigi</ACCOUNTNAME>
+      <ACCOUNTADDR>
+         <STNUM>99   </STNUM>
+         <STNAME>Bloor St</STNAME>
+         <CITY>Toronto</CITY>
+         <POSTCODE>G2G3J3</POSTCODE>
+      </ACCOUNTADDR>
+      <AGE>57</AGE>
+   </account>
+   <account num="14">
+      <ACCOUNTID>A1602</ACCOUNTID>
+      <ACCOUNTNAME>Chris Staven</ACCOUNTNAME>
+      <ACCOUNTADDR>
+         <STNUM>180  </STNUM>
+         <STNAME>Dufferin St</STNAME>
+         <CITY>Thornhill</CITY>
+         <POSTCODE>L0L2K8</POSTCODE>
+      </ACCOUNTADDR>
+      <AGE>51</AGE>
+   </account>
+   <account num="15">
+      <ACCOUNTID>A1603</ACCOUNTID>
+      <ACCOUNTNAME>Calvin Klein</ACCOUNTNAME>
+      <ACCOUNTADDR>
+         <STNUM>12   </STNUM>
+         <STNAME>Bluewalker Lane</STNAME>
+         <CITY>Bradford</CITY>
+         <POSTCODE>L2F8S8</POSTCODE>
+      </ACCOUNTADDR>
+      <AGE>21</AGE>
+   </account>
+</accounts>
